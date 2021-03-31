@@ -1,0 +1,42 @@
+---
+gcp:
+  project_id: '$PROJECT_ID'
+  business_unit: 'fal'
+  country: 'cl'
+  entity: 'shipment_events_fact'
+dataflow_default_options:
+  project: '$PROJECT_ID'
+  maxNumWorkers: '10'
+  gcpTempLocation: '$DATAFLOW_GCS_TEMP_PATH'
+  stagingLocation: '$DATAFLOW_STAGING_PATH'
+  tempLocation: '$DATAFLOW_TEMP_PATH'
+metadata_default_options:
+  creator_user_id: '$SERVICE_ACCOUNT_CLIENT_EMAIL'
+  entity: 'shipment_events_fact'
+  metadata_api_version: '1.4'
+  metadata_template_file_path: '$FIELDS_INFO_CONFIGS_PATH/metadata_template.json'
+  trf_dataset: '$BIGQUERY_TRF_DATASET'
+  acc_dataset: '$BIGQUERY_ACC_DATASET'
+composer:
+  bq_extraction:
+    task_name: 'table_extraction'
+    destination_dataset_table: '$BIGQUERY_TRF_DATASET.bq_extract_fal_shipment_events_fact_temp'
+    raw_bq_view: '$CL_FAL_VIEW_DATASET.view_name'
+    bigquery_conn_id: 'cdp_project_conn'
+    gcs_target_loc: 'gs://$RAW_BUCKET/cl/fal/shipment_events_fact/in/<run_date>/<job_id>/shipment_events_fact'
+    raw_schema_file_path: '$FIELDS_INFO_CONFIGS_PATH/bq_raw/fal_@ountry_shipment_events_fact.yaml'
+  raw_to_transformed_dataflows:
+    - jar: '$DATAFLOW_DEPLOY_PATH/latest/bi-cdp-datadriven-tech-transforms-all.jar'
+      job_class: 'com.falabella.bi.bigdata.cdp.transform.DataLoaderWithCompare'
+      sla: 50
+      task_name: 'full_data_loader'
+      metadata_file_path: 'gs://$TRF_BUCKET/$BIGQUERY_TRF_DATASET/fal_cl_shipment_events_fact/<run_date>/<job_id>/'
+      options:
+        rawFilePath: 'gs://$RAW_BUCKET/country/fal/shipment_events_fact/in/<run_date>/<job_id>/shipment_events_fact'
+        transformedBqTable: '$PROJECT_ID:$BIGQUERY_TRF_DATASET.btd_ebim_fal_shipment_events_fact'
+        fieldsConfigPath: '$FIELDS_INFO_CONFIGS_PATH/raw_trf/cl_shipment_events_fact.yaml'
+        runDate: '<run_date>'
+        matchKeys: 'shp_id'
+        numWorkers: '10'
+        cdpRunId: '<job_id>'
+        cdpDagId: '<dag_id>'
