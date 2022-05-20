@@ -1,18 +1,15 @@
 from google.cloud import bigquery
-import os
-import sys
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'/Users/shiratho1/Documents/Falabella/QA/JSON_GCP/cl.json'
+from google.oauth2 import service_account
 
-project_id = 'tc-sc-bi-bigdata-cdl-corp-dev'
-client = bigquery.Client(project=project_id)
+credentials = service_account.Credentials.from_service_account_file('C:/Users/SHILRATH/gcp/sa_key.json')
+
+project_id = 'neat-acre-335214'
+client = bigquery.Client(credentials= credentials,project=project_id)
 count=1
 
-queries = ["select count(*) from tc-sc-bi-bigdata-cdl-corp-dev.acc_fal_cl_dev.vw_fal_cl_shipments_fact",
-           "select count(*) from tc-sc-bi-bigdata-cdl-corp-dev.acc_sod_cl_dev.vw_sod_cl_shipments_fact",
-           "select count(*) from tc-sc-bi-bigdata-cdl-corp-dev.acc_tot_cl_dev.vw_tot_cl_shipments_fact",
-           "select count(*) from tc-sc-bi-bigdata-cdl-corp-dev.acc_fal_cl_dev.vw_fal_cl_shipment_events_fact",
-           "select count(*) from tc-sc-bi-bigdata-cdl-corp-dev.acc_sod_cl_dev.vw_sod_cl_shipment_events_fact",
-           "select count(*) from tc-sc-bi-bigdata-cdl-corp-dev.acc_tot_cl_dev.vw_tot_cl_shipment_events_fact"
+queries = ["select count(*) from neat-acre-335214.testdataset.table3",
+           "select * from neat-acre-335214.testdataset.table3"
+
            ]
 for query in queries:
 
