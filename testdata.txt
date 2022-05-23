@@ -1,0 +1,9 @@
+Info,Warning,Critical
+Info,Warning,Critical
+Info,Warning,NA
+Info,Warning,Critical
+Info,Warning,Critical
+Info,Warning,Critical
+Info,Warning,Critical
+Info,Warning,Critical
+Info,Warning,Critical
