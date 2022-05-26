@@ -1,0 +1,28 @@
+
+Refer: https://medium.com/analytics-vidhya/datapiepeline-using-apache-beam-and-google-cloud-dataflow-as-runner-and-bigquery-as-datasink-a6dcfadc8428
+-->
+https://github.com/ankitakundra/GoogleCloudDataflow/blob/master/dataingestion.py
+
+Steps involved in creating a complete Pipeline:
+
+Create a Google Cloud Storage in the Region which you prefer.
+Create a BigQuery Dataset in the same project
+Create a Service Account and provide owner role
+Create Pipeline using Apache Beam
+Analyze logs using BigQuery and DataStudio
+
+
+
+
+Run :
+
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/json_file.json"
+export PROJECT=your_project_id
+export BUCKET=your_bucket_id
+export REGION=your_region
+python main.py  \
+ --region $REGION   \
+ --runner DataflowRunner  \
+ --project $PROJECT  \
+ --temp_location gs://$BUCKET/tmp/ \
+ --input gs://$BUCKET/aws_logs/2020*
